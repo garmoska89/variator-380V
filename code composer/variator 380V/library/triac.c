@@ -28,13 +28,12 @@ void timerForTriacs(uint)
 	TA0CCTL0 &= ~CCIE;                 // Dissable interrupt
 	TACTL |= TACLR;						//reset TA0R register
 
-	P2DIR |= BIT3; 					// Set P1.0 to output direction
-	P2OUT &= ~BIT3; 			     	// Set the red LED on
+	//P2DIR |= BIT7; 					// Set P1.0 to output direction
+	//P2OUT &= ~BIT7; 			     // Set the red LED on
 }
 #pragma vector=TIMER0_A0_VECTOR
    __interrupt void Timer0_A0 (void) {		// Timer0 A0 interrupt service routine
 	//powerOnTriac();
 	//state++;
-	P2OUT ^= BIT3;						// Toggle red LED
-	//__bis_SR_register(GIE);// Low Power Mode 0, ADC10_ISR
+	//P2OUT ^= BIT7;						// Toggle red LED
 }

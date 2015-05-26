@@ -15,10 +15,10 @@ void watchDogConfigure()
 	//WDTCTL = WDTPW | WDTTMSEL |	WDTCNTCL  | WDTIS1  			;	//65us, 	15.30kHz
 	  WDTCTL = WDTPW | WDTTMSEL |	WDTCNTCL  			| 	WDTIS0  ;	//1.044mS,	479Hz		;
 	//WDTCTL = WDTPW | WDTTMSEL |	WDTCNTCL  						;   //4.176ms	239.6Hz
-			//WDT_MDLY_8
-	IE1 |= WDTIE;                         // enable Watchdog timer interrupts
-	//P2DIR |= BIT3; 					// Set P1.0 to output direction
-	//P2OUT &= ~BIT3; 			     	// Set the red LED on
+	IE1 |= WDTIE;                        	// enable Watchdog timer interrupts
+
+	//P2DIR |= BIT3; 						// Set P2.3 to output direction
+	//P2OUT &= ~BIT3; 			     		// Set the red LED off
 }
 void configureFrequency()
 {

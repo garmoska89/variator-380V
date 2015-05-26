@@ -8,12 +8,11 @@
 #include "adc.h"
 void init_adc()
 {
-	P1SEL |= BIT0;										// ADC input pin P1.0
-	ADC10CTL1 = INCH_0+ ADC10DIV_7 + CONSEQ_2 ;         // Channel 0, ADC10CLK/8, Repeat-single-channel
+	P1SEL |= BIT0;														// ADC input pin P1.0
+	ADC10CTL1 = INCH_0+ ADC10DIV_7 + CONSEQ_2 ;         				// Channel 0, ADC10CLK/8, Repeat-single-channel
 	ADC10CTL0 = ADC10SHT_3 + MSC + ADC10ON + ADC10IE + ENC + ADC10SC;	//sample-and-hold time 64 x ADC10CLKs, Multiple sample and conversion,
-														// ADC10 on, ADC10 interrupt enable
-	ADC10AE0 |= BIT0;                         			// ADC input enable P1.0
-
+																		// ADC10 on, ADC10 interrupt enable
+	ADC10AE0 |= BIT0;                         							// ADC input enable P1.0
 }
 #pragma vector=ADC10_VECTOR
 __interrupt void ADC10_ISR(void)

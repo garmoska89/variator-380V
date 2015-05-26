@@ -14,6 +14,7 @@ int main(void)
     initDisplay();
     configureFrequency();
     watchDogConfigure();
+    //configHallSensor();
     //ErrorNumber = hall;
     timerForTriacs();
     __bis_SR_register(GIE);// Low Power Mode 0, ADC10_ISR

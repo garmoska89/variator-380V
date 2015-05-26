@@ -9,7 +9,6 @@
 #include "display.h"
 void initDisplay()
 {
-number = 666;
 P1DIR |= 0xFE;
 P1OUT |= 0xFE;
 P2DIR |= 0x07;
@@ -47,7 +46,7 @@ static uint16 oldNumber=0;									//soft filter
 		case 7: P1OUT &=0x5B;break;
 		case 8: P1OUT &=0x01;break;
 		case 9: P1OUT &=0x11;break;
-		default: while(1){}break;
+		//default: while(1){}break;
 	}
 	switch (NrOfDigit)
 	{

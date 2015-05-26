@@ -11,6 +11,7 @@
 void configHallSensor();
 
 void hallSensor();
-
+extern uint16 number;
+extern bool newValue;
 
 #endif /* LIBRARY_HALLSENSOR_H_ */
