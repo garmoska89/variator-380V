@@ -9,6 +9,7 @@
 #define TIMER_H_
 #include "commontypes.h"
 void watchDogConfigure();
+void configureFrequency();
 extern bool TaskFlag2ms;
 
 #endif /* TIMER_H_ */

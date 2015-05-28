@@ -29,9 +29,13 @@ void displayInteger();
 enum errors
 	{
 	hall=0,
+	overflow,
+	OK,
 	general
 	};
 void displayError();
-uint8 ErrorNumber;
+uint8 digitValue[3];
+uint8 ErrorType;
 bool newValue;
+bool errorOcured;
 #endif /* LIBRARY_DISPLAY_H_ */

@@ -19,26 +19,13 @@ __interrupt void ADC10_ISR(void)
 {
 	ADC10CTL0 &= ~ENC;				// Disable Conversion
 	while (ADC10CTL1 & BUSY);		// Wait if ADC10 busy
-	potitiometer = ADC10MEM;
-	number = potitiometer;
+	potentiometerADC = ADC10MEM;
+	//number = potitiometer;
 	//testTimer();
-	newValue = true;
-
+	//newValue = true;
 	ADC10CTL0 &= ~ADC10IFG;  // clear interrupt flag
 }
-void testTimer()
+void startADC()
 {
-if (potitiometer>10)
-{
-	TA0CCR0 = number * 10;
-	TACTL |= TACLR;
-	TACTL |= MC_1;						//Up mode: the timer counts up to TACCR0.
-	TA0CCTL0 |= CCIE;                 // Enable Timer A0 interrupts, bit 4=1
-}
-else
-	{
-	TA0CCTL0 &= ~CCIE;                 	//Disable Timer A0 interrupts, bit 4=1
-	TACTL &= ~MC_3;						//Stop mode: the timer is halted.
-	TACTL |= TACLR;
-	}
+	ADC10CTL0 |= ENC + ADC10SC;		// Enable Conversion and conversion start
 }

@@ -11,8 +11,12 @@
 #define MAX_ROTATION 3;//3069/1023
 void init_adc();
 void testTimer();
+void startADC();
 uint16 adcToRotation();
-uint16 potitiometer;
+
+uint16 potentiometerADC;
+uint16 potentiometerRotation;
+
 extern uint16 number;
 extern bool newValue;
 #endif /* LIBRARY_ADC_H_ */

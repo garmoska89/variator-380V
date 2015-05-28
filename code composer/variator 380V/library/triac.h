@@ -10,7 +10,9 @@
 #include "commontypes.h"
 #include <msp430g2553.h>
 void timerForTriacs();
-void powerOnTriacAfter(uint16 time);
+void startTimer();
+void stopTimerForTriacs();
+void configureTriac();
 uint8 state;
 uint16 time;
 #endif /* LIBRARY_TRIAC_H_ */

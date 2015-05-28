@@ -3,21 +3,26 @@
 #include "library/display.h"
 #include "library/commontypes.h"
 #include "library/timer.h"
+#include "library/hallSensor.h"
+#include "library/timer.h"
+#include "library/triac.h"
 /*
  * main.c
  */
 bool TaskFlag2ms = false;
+//#pragma section ghs = ".main2"
 int main(void)
 {
-
-    init_adc();
+	init_adc();
     initDisplay();
     configureFrequency();
     watchDogConfigure();
-    //configHallSensor();
-    //ErrorNumber = hall;
+    configHallSensor();
     timerForTriacs();
+    configureTriac();
+    startTimer();
     __bis_SR_register(GIE);// Low Power Mode 0, ADC10_ISR
+
     while(1)
     {
 
@@ -25,27 +30,36 @@ int main(void)
     //__bis_SR_register(CPUOFF + GIE);// Low Power Mode 0, ADC10_ISR
 	return 0;
 }
-void Task1ms()
+//#pragma endsection
+void Task4ms();
+void Task100ms();
+void Task250ms();
+
+void WatchDogTask()
 {
 	static uint8 updatePot=0;
 	updatePot++;
-	if (updatePot%5 == 0)
-	{
-		Task5ms();
-	}
-	if (updatePot%100 == 0)
+
+	//if(updatePot%10 == 0 )
+
+	Task4ms();
+
+	if (updatePot%25 == 0)
 	{
 		Task100ms();
 	}
-	if (updatePot == 250)
+
+	if (updatePot == 50)
 	{
 		Task250ms();
 		updatePot=0;
 	}
+
 }
-void Task5ms()
+void Task4ms()
 {
-	displayInteger();
+	if (!errorOcured) displayInteger();
+	else displayError();
 }
 void Task100ms()//100ms tasc
 {
@@ -53,6 +67,6 @@ void Task100ms()//100ms tasc
 }
 void Task250ms()//500ms tasc
 {
-	ADC10CTL0 |= ENC + ADC10SC;		// Enable Conversion and conversion start
+	startADC();
 }
 

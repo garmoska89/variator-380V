@@ -20,20 +20,39 @@ void powerOnTriac()
 	default:TACTL &=~MC_0;state=0;break;//stop timer and whate zero-cross
 	}
 }
+void configureTriac()
+{
+	P2SEL &= ~(BIT4+BIT5+BIT7);
+	P2DIR |=   BIT4+BIT5+BIT7;
+	P2OUT &= ~(BIT4+BIT5+BIT7);
+
+}
 void timerForTriacs(uint)
 {
 	TA0CCR0 = 0xFFFF;
-	//		SMCLK	 |  /8	|Stop Mode
-	TACTL = TASSEL_2 | ID_3 | MC_0;
+	//		SMCLK	 |  /1	|Stop Mode
+	TACTL = TASSEL_2 | ID_0 | MC_0;
 	TA0CCTL0 &= ~CCIE;                 // Dissable interrupt
 	TACTL |= TACLR;						//reset TA0R register
-
-	//P2DIR |= BIT7; 					// Set P1.0 to output direction
-	//P2OUT &= ~BIT7; 			     // Set the red LED on
 }
 #pragma vector=TIMER0_A0_VECTOR
-   __interrupt void Timer0_A0 (void) {		// Timer0 A0 interrupt service routine
+   __interrupt void Timer0_A0 (void)
+{	// Timer0 A0 interrupt service routine
 	//powerOnTriac();
 	//state++;
-	//P2OUT ^= BIT7;						// Toggle red LED
+	P2OUT ^= BIT4;
 }
+   void startTimer()
+   {
+   	TA0CCR0 = 0x1FFF;//FFFF - 33.33ms
+   	TACTL |= TACLR;
+   	TACTL |= MC_1;						//Up mode: the timer counts up to TACCR0.
+   	TA0CCTL0 |= CCIE;                 // Enable Timer A0 interrupts, bit 4=1
+   }
+   void stopTimerForTriacs()
+   	{
+	P2OUT &= ~(BIT4+BIT5+BIT7);			//turn off all pins for Triacs
+	TA0CCTL0 &= ~CCIE;                 	//Disable Timer A0 interrupts, bit 4=1
+   	TACTL &= ~MC_3;						//Stop mode: the timer is halted.
+   	TACTL |= TACLR;
+   	}
