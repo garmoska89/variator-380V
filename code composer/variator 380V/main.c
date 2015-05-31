@@ -6,13 +6,16 @@
 #include "library/hallSensor.h"
 #include "library/timer.h"
 #include "library/triac.h"
+#include "library/program.h"
 /*
  * main.c
  */
-bool TaskFlag2ms = false;
 //#pragma section ghs = ".main2"
+bool fault = false;
+bool ignored = false;
 int main(void)
 {
+	myState = withHallOff;
 	init_adc();
     initDisplay();
     configureFrequency();
@@ -20,7 +23,7 @@ int main(void)
     configHallSensor();
     timerForTriacs();
     configureTriac();
-    startTimer();
+    //startTimer();
     __bis_SR_register(GIE);// Low Power Mode 0, ADC10_ISR
 
     while(1)
@@ -28,12 +31,12 @@ int main(void)
 
     }
     //__bis_SR_register(CPUOFF + GIE);// Low Power Mode 0, ADC10_ISR
-	return 0;
+    return 0;
 }
 //#pragma endsection
 void Task4ms();
 void Task100ms();
-void Task250ms();
+void Task500ms();
 
 void WatchDogTask()
 {
@@ -43,30 +46,58 @@ void WatchDogTask()
 	//if(updatePot%10 == 0 )
 
 	Task4ms();
+	if ( myState == withHall ){programWithHall();}
+	if ( myState == withoutHall){programWithoutHall();};
 
 	if (updatePot%25 == 0)
 	{
 		Task100ms();
 	}
-
-	if (updatePot == 50)
+	if (updatePot == 120)	//only to start conversion for ADC
 	{
-		Task250ms();
+		startADC();
+	}
+	if (updatePot == 125)
+	{
+		Task500ms();
 		updatePot=0;
 	}
 
 }
 void Task4ms()
 {
-	if (!errorOcured) displayInteger();
-	else displayError();
+	updateDisplay();
 }
 void Task100ms()//100ms tasc
 {
 
 }
-void Task250ms()//500ms tasc
+
+void Task500ms()//500ms tasc
 {
-	startADC();
+	if ( myState == withHall )
+	{
+		uint16 tmpValue;
+		//display rotation
+		tmpValue = rotation;
+		digitValue[0]=tmpValue/1000;
+		tmpValue %=1000;
+		digitValue[1]=tmpValue/100;
+		tmpValue %=100;
+		digitValue[2]=tmpValue/10;
+		newValue = true;
+	}
+	if ( myState == withoutHall)
+	{
+		uint16 tmpValue;
+		//display rotation
+		tmpValue = procentValue;
+		digitValue[0]=tmpValue/100;
+		tmpValue %=100;
+		digitValue[1]=tmpValue/10;
+		tmpValue %=10;
+		digitValue[2]=tmpValue;
+		newValue = true;
+	}
 }
 

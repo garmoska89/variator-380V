@@ -4,8 +4,9 @@
  *  Created on: May 24, 2015
  *      Author: Serghei
  */
-#include <msp430g2553.h>
+
 #include "adc.h"
+
 void init_adc()
 {
 	P1SEL |= BIT0;														// ADC input pin P1.0
@@ -17,12 +18,93 @@ void init_adc()
 #pragma vector=ADC10_VECTOR
 __interrupt void ADC10_ISR(void)
 {
+	static bool onlyOnce0=true;
+	static bool onlyOnce1=true;
+	static bool onlyOnce2=true;
 	ADC10CTL0 &= ~ENC;				// Disable Conversion
 	while (ADC10CTL1 & BUSY);		// Wait if ADC10 busy
-	potentiometerADC = ADC10MEM;
-	//number = potitiometer;
-	//testTimer();
-	//newValue = true;
+	potentiometerADC = (1023 - ADC10MEM);
+
+	//potentiometerADC = (1023-potentiometerADC);
+	if ( (potentiometerADC < ADC_lowLevel))
+	{
+		if(onlyOnce0 && (myState == withHallOff || myState == withHallHigh || myState == withHall || myState == withoutHall) )
+		{
+			myState = withHallOff;stopTimerForTriacs();
+			onlyOnce0=false;onlyOnce1=true;onlyOnce2=true;
+			digitValue[0]='O';
+			digitValue[1]='F';
+			digitValue[2]='F';
+			newValue = true;
+		}
+
+		if(onlyOnce0 && (myState == WithHall_fault) )
+		{
+			myState = withoutHallOff;
+			stopTimerForTriacs();
+			onlyOnce0=false;onlyOnce1=true;onlyOnce2=true;
+			digitValue[0]='O';
+			digitValue[1]='F';
+			digitValue[2]='F';
+			newValue = true;
+		}
+	}
+	else if ( (potentiometerADC >= ADC_lowLevel) && (potentiometerADC <= ADC_highLevel) )
+	{
+		if ( onlyOnce1 && ( myState == withHallOff || myState == withHallHigh) )
+		{
+			myState = withHall;
+			potentiometerRotation = map(potentiometerADC,ADC_lowLevel,ADC_highLevel,minRotation,maxRotation);
+			startHallSensor();
+			onlyOnce0=true;onlyOnce1=false;onlyOnce2=true;
+		}
+
+		if ( onlyOnce1 && ( myState == withoutHallOff || myState == withoutHallHigh))
+		{
+			myState = withoutHall;
+			state=0;
+			powerOnTriac();
+			onlyOnce0=true;onlyOnce1=false;onlyOnce2=true;
+		}
+
+	}
+	else
+	{
+		if(onlyOnce2 && (myState == withHallOff || myState == withHall))
+		{
+			myState = withHallHigh;
+			stopTimerForTriacs();
+			putONallTriacs();
+			onlyOnce0=true;onlyOnce1=true;onlyOnce2=false;
+			digitValue[0]=9;
+			digitValue[1]=9;
+			digitValue[2]=9;
+			newValue = true;
+		}
+		if(onlyOnce2 && (myState == withoutHallOff || myState == withoutHall))
+		{
+			myState = withoutHallHigh;
+			stopTimerForTriacs();
+			putONallTriacs();
+			CCR0Value=0;
+			procentValue = 100;
+			onlyOnce0=true;onlyOnce1=true;onlyOnce2=false;
+			digitValue[0]=1;
+			digitValue[1]=0;
+			digitValue[2]=0;
+			newValue = true;
+		}
+	}
+	//display ADC
+	/*
+		tmpValue = potentiometerADC;
+		digitValue[0]=tmpValue/1000;
+		tmpValue %=1000;
+		digitValue[1]=tmpValue/100;
+		tmpValue %=100;
+		digitValue[2]=tmpValue/10;
+		newValue = true;
+	*/
 	ADC10CTL0 &= ~ADC10IFG;  // clear interrupt flag
 }
 void startADC()

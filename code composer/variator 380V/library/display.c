@@ -14,7 +14,7 @@ P1OUT |= 0xFE;
 P2DIR |= 0x07;
 P2OUT |= 0x07;
 }
-void displayInteger()
+void updateDisplay()
 {
 static uint8 NrOfDigit = 0;
 static uint8 tmpValueOfDigit[3];
@@ -52,7 +52,7 @@ static uint8 tmpValueOfDigit[3];
 		case 'E': P1OUT &=0x25;break;	//65 ASCII
 		case 'r': P1OUT &=0xEC;break;	//72 ASCII
 		case 'O': P1OUT &=0x03;break;	//79 ASCII
-		case 'F': P1OUT &=0xEC;break;	//70 ASCII
+		case 'F': P1OUT &=0x2D;break;	//70 ASCII
 		//default: while(1){}break;		// to leave off display
 	}
 	switch (NrOfDigit)
@@ -60,44 +60,5 @@ static uint8 tmpValueOfDigit[3];
 	case 0: P2OUT&=~0x01;NrOfDigit++;break;
 	case 1: P2OUT&=~0x02;NrOfDigit++;break;
 	case 2: P2OUT&=~0x04;NrOfDigit=0;break;
-	}
-}
-
-void displayError()
-{
-	static uint8 NrOfDigit = 0;
-	static bool newValueGetted = false;
-	static uint8 digit[3];
-
-	P2OUT |=0x07;						//turn off all 3 digit
-	P1OUT |=0xFE;						//turn off all segments
-
-	if (!newValueGetted)
-	{
-		newValueGetted = true;
-		digit[2] = ErrorType;
-	}
-
-	switch (NrOfDigit)
-	{
-		case 0: P1OUT &=0x25;break;
-		case 1: P1OUT &=0xEC;break;
-		case 2:
-				{
-					switch (digit[2])				//last digit display
-					{
-						case hall:  	P1OUT &=0xDB;break;
-						case overflow:  P1OUT &=0x51;break;
-						case OK	:		P1OUT &=0x03;break;
-						default: break;
-					}
-				}
-	}
-
-	switch (NrOfDigit)
-	{
-		case 0: P2OUT&=~0x01;NrOfDigit++;break;
-		case 1: P2OUT&=~0x02;NrOfDigit++;break;
-		case 2: P2OUT&=~0x04;NrOfDigit=0;newValueGetted = false;break;
 	}
 }

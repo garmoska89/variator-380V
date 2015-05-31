@@ -9,10 +9,12 @@
 #define LIBRARY_TRIAC_H_
 #include "commontypes.h"
 #include <msp430g2553.h>
+#include "program.h"
 void timerForTriacs();
 void startTimer();
 void stopTimerForTriacs();
 void configureTriac();
+void putONallTriacs();
 uint8 state;
 uint16 time;
 #endif /* LIBRARY_TRIAC_H_ */
