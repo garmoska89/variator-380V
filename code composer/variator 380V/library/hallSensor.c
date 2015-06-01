@@ -62,11 +62,13 @@ __interrupt void Timer_A1 (void)
 	 case 4:
 //		 TA1CCTL1 &=~COV;
 //		 TA1CTL |= TACLR;
-		__enable_interrupt(); // overflow
+	 __enable_interrupt(); // overflow
 	 break; // CCR2 not used
 	 case 10:
      {
 
+     if (timeForOverflow == howMuchTimeIgnoreOverflow)
+     {
      //display ER3 in case if overflow
      digitValue[0]='E';
      digitValue[1]='r';
@@ -78,11 +80,12 @@ __interrupt void Timer_A1 (void)
 
 	 myState = WithHall_fault;
      stopHallSensor();
-
+     }
 	 //newValue = true;
 //	 TA1CTL &=~TAIFG;
 //	 //TA1CCTL0 &=~COV;
 //	 TA1CTL |= TACLR;
+     TA1CTL |= TACLR;
      __enable_interrupt(); // overflow
 	 break;
      }

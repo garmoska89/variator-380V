@@ -16,11 +16,11 @@ void programWithHall()
 	if (tmpValue < 20  && tmpValue > 11) tmpValue = 20;
 	if (difRotation < 0 )	//Motor Rotation is to HIGH
 	{
-		if ( ( (CCR0Value + 100)<MAX_CCRO) && (rotation>minRotation) ) CCR0Value += 100;
+		if ( ( (CCR0Value + 100)<MAX_CCRO) && (rotation>minRotation) ) CCR0Value += 10;
 	}
 	else					//Motor Rotation is to Low
 	{
-		if ( CCR0Value >= 100 ) CCR0Value -= 100;
+		if ( CCR0Value >= 100 ) CCR0Value -= 10;
 	}
 }
 void programWithoutHall()

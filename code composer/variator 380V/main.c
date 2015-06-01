@@ -7,12 +7,13 @@
 #include "library/timer.h"
 #include "library/triac.h"
 #include "library/program.h"
+
 /*
  * main.c
  */
 //#pragma section ghs = ".main2"
-bool fault = false;
-bool ignored = false;
+
+
 int main(void)
 {
 	myState = withHallOff;
@@ -86,6 +87,11 @@ void Task500ms()//500ms tasc
 		tmpValue %=100;
 		digitValue[2]=tmpValue/10;
 		newValue = true;
+		if (timeForOverflow < howMuchTimeIgnoreOverflow) 	//how much time ignore overflow
+		{													//time to start mo
+			timeForOverflow++;
+		}
+
 	}
 	if ( myState == withoutHall)
 	{

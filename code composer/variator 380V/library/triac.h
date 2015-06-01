@@ -15,6 +15,7 @@ void startTimer();
 void stopTimerForTriacs();
 void configureTriac();
 void putONallTriacs();
+void powerOnTriac();
 uint8 state;
 uint16 time;
 #endif /* LIBRARY_TRIAC_H_ */
