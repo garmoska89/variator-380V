@@ -11,7 +11,7 @@ void powerOnTriac()
 	switch (state)
 	{
 	case 0: P2IE  |= BIT6;break;//up-mode,
-	case 1: TA0CCR0 = CCR0Value;TACTL |= TACLR;TA0CCTL0 |= CCIE;TACTL |= MC1;break;//up-mode,
+	case 1: TA0CCR0 = CCR0Value;TACTL |= TACLR;TA0CCTL0 |= CCIE;TACTL |= MC1;P2OUT &= ~(BIT4+BIT5+BIT7);break;//up-mode,
 	case 2: P2OUT |= BIT7;TA0CCR0 = 0x000F;TACTL |= TACLR;break;
 	case 3: P2OUT &= ~BIT7;TA0CCR0 = CCR0Value;TACTL |= TACLR;break;
 	case 4: P2OUT |= BIT7;TA0CCR0 = 0x000F;TACTL |= TACLR;break;

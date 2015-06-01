@@ -57,7 +57,9 @@ __interrupt void ADC10_ISR(void)
 			timeForOverflow=0;
 			CCR0Value = MAX_CCRO;
 			potentiometerRotation = map(potentiometerADC,ADC_lowLevel,ADC_highLevel,minRotation,maxRotation);
+			state=0;
 			startHallSensor();
+			powerOnTriac();
 			onlyOnce0=true;onlyOnce1=false;onlyOnce2=true;
 		}
 
