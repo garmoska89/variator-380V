@@ -14,8 +14,8 @@
 #include "commontypes.h"
 #define MAX_ROTATION 3;//3069/1023
 
-#define ADC_lowLevel 12
-#define ADC_highLevel 1011
+#define ADC_lowLevel 5
+#define ADC_highLevel 1020
 
 void init_adc();
 void testTimer();

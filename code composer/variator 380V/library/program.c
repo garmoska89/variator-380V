@@ -13,23 +13,23 @@ void programWithHall()
 	uint16 tmpValue;
 	tmpValue = potentiometerRotation;
 	difRotation = tmpValue - rotation;
-	if (tmpValue < 20  && tmpValue > 11) tmpValue = 20;
+	tmpValue = constrain(tmpValue,ADC_lowLevel,ADC_highLevel);
 	if (difRotation < 0 )	//Motor Rotation is to HIGH
 	{
-		if ( ( (CCR0Value + 10)<MAX_CCRO) && (rotation>minRotation) ) CCR0Value += 10;
+		if ( ( (CCR0Value + 50)<MAX_CCRO) && (rotation>minRotation) ) CCR0Value += 50;
 	}
 	else					//Motor Rotation is to Low
 	{
-		if ( CCR0Value >= 20 ) CCR0Value -= 10;
+		if ( CCR0Value >= 65 ) CCR0Value -= 50;
 	}
 }
 void programWithoutHall()
 {
 	uint16 tmpValue;
 	tmpValue = potentiometerADC;
-	tmpValue = constrain(tmpValue,ADC_lowLevel+8,ADC_highLevel-8);
-	CCR0Value = map(tmpValue,ADC_lowLevel+8,ADC_highLevel-8,MAX_CCRO,0x000F);
-	procentValue = map(tmpValue,ADC_lowLevel+8,ADC_highLevel-8,0,100);
+	tmpValue = constrain(tmpValue,ADC_lowLevel,ADC_highLevel);
+	CCR0Value = map(tmpValue,ADC_lowLevel,ADC_highLevel,MAX_CCRO,0x000F);
+	procentValue = map(tmpValue,ADC_lowLevel,ADC_highLevel,1,100);
 	procentValue=constrain(procentValue,0,100);
 }
 int32 map(int32 x, int32 in_min,int32 in_max, int32 out_min, int32 out_max)

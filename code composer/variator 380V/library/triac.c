@@ -13,7 +13,7 @@ void powerOnTriac()
 	case 0: P2IE  |= BIT6;break;//up-mode,
 	case 1: TA0CCR0 = CCR0Value;TACTL |= TACLR;TA0CCTL0 |= CCIE;TACTL |= MC1;P2OUT &= ~(BIT4+BIT5+BIT7);break;//up-mode,
 	case 2: P2OUT |= BIT7;TA0CCR0 = 0x000F;TACTL |= TACLR;break;
-	case 3: P2OUT &= ~BIT7;TA0CCR0 = CCR0Value;TACTL |= TACLR;break;
+	case 3: P2OUT &= ~BIT7;TA0CCR0 = 0x41A0;TACTL |= TACLR;break;
 	case 4: P2OUT |= BIT7;TA0CCR0 = 0x000F;TACTL |= TACLR;break;
 	case 5: P2OUT &= ~BIT7;TACTL &=~MC_0;state=1;TA0CCTL0 &= ~CCIE;break;
 	//case 2: TA0CCR0 = time;TACTL |= MC1;break;
@@ -67,7 +67,7 @@ void timerForTriacs(uint)
    }
    void stopTimerForTriacs()
    	{
-	P2IE  &=  ~BIT6; //  disable  interrupt   for P2.6
+	//P2IE  &=  ~BIT6; //  disable  interrupt   for P2.6
 	P2OUT &= ~(BIT4+BIT5+BIT7);			//turn off all pins for Triacs
 	TA0CCTL0 &= ~CCIE;                 	//Disable Timer A0 interrupts, bit 4=1
    	TACTL &= ~MC_1;						//Stop mode: the timer is halted.
@@ -81,5 +81,5 @@ void timerForTriacs(uint)
    	TACTL |= TACLR;
 
    	state=1;
-   	powerOnTriac();
+   	if (myState == withHall || myState == withoutHall) powerOnTriac();
    }

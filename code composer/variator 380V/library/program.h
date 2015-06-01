@@ -8,7 +8,7 @@
 #include "commontypes.h"
 #include "adc.h"
 #include "hallSensor.h"
-#define MAX_CCRO 0x1D00
+#define MAX_CCRO 0x3600	// parimise ca apare un spike la 3700
 #define minRotation 300
 #define maxRotation 4000
 #ifndef PROGRAM_H_

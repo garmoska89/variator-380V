@@ -30,7 +30,8 @@ __interrupt void ADC10_ISR(void)
 	{
 		if(onlyOnce0 && (myState == withHallOff || myState == withHallHigh || myState == withHall || myState == withoutHall) )
 		{
-			myState = withHallOff;stopTimerForTriacs();
+			myState = withHallOff;
+			stopTimerForTriacs();
 			onlyOnce0=false;onlyOnce1=true;onlyOnce2=true;
 			digitValue[0]='O';
 			digitValue[1]='F';
@@ -49,7 +50,7 @@ __interrupt void ADC10_ISR(void)
 			newValue = true;
 		}
 	}
-	else if ( (potentiometerADC >= ADC_lowLevel) && (potentiometerADC <= ADC_highLevel) )
+	if ( (potentiometerADC >= ADC_lowLevel+5) && (potentiometerADC <= ADC_highLevel-5) )
 	{
 		if ( onlyOnce1 && ( myState == withHallOff || myState == withHallHigh) )
 		{
@@ -57,7 +58,6 @@ __interrupt void ADC10_ISR(void)
 			timeForOverflow=0;
 			CCR0Value = MAX_CCRO;
 			potentiometerRotation = map(potentiometerADC,ADC_lowLevel,ADC_highLevel,minRotation,maxRotation);
-			state=0;
 			startHallSensor();
 			powerOnTriac();
 			onlyOnce0=true;onlyOnce1=false;onlyOnce2=true;
@@ -66,13 +66,12 @@ __interrupt void ADC10_ISR(void)
 		if ( onlyOnce1 && ( myState == withoutHallOff || myState == withoutHallHigh))
 		{
 			myState = withoutHall;
-			state=0;
 			powerOnTriac();
 			onlyOnce0=true;onlyOnce1=false;onlyOnce2=true;
 		}
 
 	}
-	else
+	if (potentiometerADC > ADC_highLevel)
 	{
 		if(onlyOnce2 && (myState == withHallOff || myState == withHall))
 		{
