@@ -54,8 +54,8 @@ __interrupt void ADC10_ISR(void)
 	{
 		if ( onlyOnce1 && ( myState == withHallOff || myState == withHallHigh) )
 		{
-			if (myState == withHallHigh) CCR0Value = MIN_CCR0;
-			else CCR0Value = MAX_CCRO;
+			if (myState == withHallHigh) {CCR0Value = MIN_CCR0;}
+			else {state=6;CCR0Value = MAX_CCRO;}
 			myState = withHall;
 			timeForOverflow=0;
 			//CCR0Value = MAX_CCRO;
@@ -67,7 +67,11 @@ __interrupt void ADC10_ISR(void)
 
 		if ( onlyOnce1 && ( myState == withoutHallOff || myState == withoutHallHigh))
 		{
+			if (myState == withoutHallHigh) CCR0Value = MIN_CCR0;
+			else CCR0Value = MAX_CCRO;
+
 			myState = withoutHall;
+
 			powerOnTriac();
 			onlyOnce0=true;onlyOnce1=false;onlyOnce2=true;
 		}

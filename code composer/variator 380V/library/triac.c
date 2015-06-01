@@ -16,11 +16,12 @@ void powerOnTriac()
 	case 3: P2OUT &= ~BIT7;TA0CCR0 = 0x41A0;TACTL |= TACLR;break;
 	case 4: P2OUT |= BIT7;TA0CCR0 = 0x000F;TACTL |= TACLR;break;
 	case 5: P2OUT &= ~BIT7;TACTL &=~MC_0;state=1;TA0CCTL0 &= ~CCIE;break;
+	case 6: TA0CCR0 = CCR0Value;TACTL |= TACLR;TA0CCTL0 |= CCIE;TACTL |= MC1;P2IE  |= BIT6;break;
 	//case 2: TA0CCR0 = time;TACTL |= MC1;break;
 	//case 3: TA0CCR0 = time;TACTL |= MC1;break;
 	//case 4: TA0CCR0 = time;TACTL |= MC1;break;
 	//case 5: TA0CCR0 = time;TACTL |= MC1;break;
-	case 6: break;
+	case 7: break;
 	default:TACTL &=~MC_0;state=0;break;//stop timer and whate zero-cross
 	}
 }
