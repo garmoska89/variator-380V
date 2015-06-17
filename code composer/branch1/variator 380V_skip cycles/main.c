@@ -73,6 +73,7 @@ void Task100ms()//100ms tasc
 
 void Task500ms()//500ms tasc
 {
+
 	if ( myState == withHall )
 	{
 		uint16 tmpValue;

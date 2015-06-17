@@ -24,7 +24,7 @@ __interrupt void ADC10_ISR(void)
 	ADC10CTL0 &= ~ENC;				// Disable Conversion
 	while (ADC10CTL1 & BUSY);		// Wait if ADC10 busy
 	potentiometerADC = (1023 - ADC10MEM);
-
+	potentiometerRotation = map(potentiometerADC,ADC_lowLevel,ADC_highLevel,minRotation,maxRotation);
 	//potentiometerADC = (1023-potentiometerADC);
 	if ( (potentiometerADC < ADC_lowLevel))
 	{
@@ -55,7 +55,7 @@ __interrupt void ADC10_ISR(void)
 			myState = withHall;
 			P2IE  |= BIT6;
 			OverFlowCounts=0;
-			OverFlowCounts=howMuchCountsIgnoreOverflow;
+			startHallSensor();
 			onlyOnce0=true;onlyOnce1=false;onlyOnce2=true;
 		}
 

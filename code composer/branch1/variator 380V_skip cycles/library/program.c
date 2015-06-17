@@ -15,9 +15,8 @@ void programWithHall()
 		if ( rotation > minRotation ) onAllTriacs=false;
 		else onAllTriacs=true;
 	}
-	else					//Motor Rotation is to Low
+	else if ( difRotation <= 50 )					//Motor Rotation is to Low
 	{
-		//onAllTriacs=true;					|
 		periodToSkip = map(difRotation,0,50,10,0);				//o stingere lina cind ajunge la rotatiile dorite cu 50 rot. mai inainte incepem a stinge incetisor
 		if (periodCounts > 10) periodCounts=0;
 
@@ -26,6 +25,10 @@ void programWithHall()
 
 		if (periodToSkip != 0) periodCounts++;
 		else periodCounts=0;
+	}
+	else
+	{
+		putONallTriacs();
 	}
 }
 void programWithoutHall()

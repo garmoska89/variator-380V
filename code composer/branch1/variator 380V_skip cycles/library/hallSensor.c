@@ -71,8 +71,9 @@ __interrupt void Timer_A1 (void)
      digitValue[1]='r';
 	 digitValue[2]= 3;
 	 newValue = true;
-	 putOFFallTriacs();
 	 myState = WithHall_fault;
+	 putOFFallTriacs();
+	 stopHallSensor();
      }
      __enable_interrupt(); // overflow
 	 break;
