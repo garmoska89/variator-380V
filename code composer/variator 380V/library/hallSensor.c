@@ -74,19 +74,10 @@ __interrupt void Timer_A1 (void)
      digitValue[1]='r';
 	 digitValue[2]= 3;
 	 newValue = true;
-
-	 //fault=true;
-	 //ignored=false;
-
 	 myState = WithHall_fault;
 	 stopTimerForTriacs();
      stopHallSensor();
      }
-	 //newValue = true;
-//	 TA1CTL &=~TAIFG;
-//	 //TA1CCTL0 &=~COV;
-//	 TA1CTL |= TACLR;
-     //TA1CTL |= TACLR;
      __enable_interrupt(); // overflow
 	 break;
      }

@@ -7,23 +7,35 @@
 #include "triac.h"
 void powerOnTriac()
 {
-	//calculare time
-	switch (state)
-	{
-	case 0: P2IE  |= BIT6;break;//up-mode,
-	case 1: TA0CCR0 = CCR0Value;TACTL |= TACLR;TA0CCTL0 |= CCIE;TACTL |= MC1;P2OUT &= ~(BIT4+BIT5+BIT7);break;//up-mode,
-	case 2: P2OUT |= BIT7;TA0CCR0 = 0x000F;TACTL |= TACLR;break;
-	case 3: P2OUT &= ~BIT7;TA0CCR0 = 0x41A0;TACTL |= TACLR;break;
-	case 4: P2OUT |= BIT7;TA0CCR0 = 0x000F;TACTL |= TACLR;break;
-	case 5: P2OUT &= ~BIT7;TACTL &=~MC_0;state=1;TA0CCTL0 &= ~CCIE;break;
-	case 6: TA0CCR0 = CCR0Value;TACTL |= TACLR;TA0CCTL0 |= CCIE;TACTL |= MC1;P2IE  |= BIT6;break;
-	//case 2: TA0CCR0 = time;TACTL |= MC1;break;
-	//case 3: TA0CCR0 = time;TACTL |= MC1;break;
-	//case 4: TA0CCR0 = time;TACTL |= MC1;break;
-	//case 5: TA0CCR0 = time;TACTL |= MC1;break;
-	case 7: break;
-	default:TACTL &=~MC_0;state=0;break;//stop timer and whate zero-cross
-	}
+        //calculare time
+        switch (state)
+        {
+        case 0: TA0CCR0 = CCR0Value;
+        	if (needToStartTimer)
+        		{
+        		startTimer();
+        		needToStartTimer = false;
+        		}
+        								P2OUT &= ~(BIT4+BIT5+BIT7);	P2OUT |= BIT4;		TACTL |= TACLR;	break;        	// F1 !F2 !F3
+        case 1: TA0CCR0 = delay_3ms3;   P2OUT &= ~(BIT4+BIT5+BIT7);	P2OUT |= BIT7;    	TACTL |= TACLR;	break;        	//!F1 !F2  F3 3.3ms
+        case 2: TA0CCR0 = delay_3ms3;   P2OUT &= ~(BIT4+BIT5+BIT7);	P2OUT |= BIT5;     	TACTL |= TACLR;	break;        	//!F1  F2 !F3 3.3ms
+        case 3: TA0CCR0 = delay_3ms3;   P2OUT &= ~(BIT4+BIT5+BIT7);	P2OUT |= BIT1;     	TACTL |= TACLR;	break;        	// F1 !F2 !F3 3.3ms
+        case 4: TA0CCR0 = delay_3ms3;   P2OUT &= ~(BIT4+BIT5+BIT7);	P2OUT |= BIT7;     	TACTL |= TACLR;	break;        	//!F1 !F2  F3 3.3ms
+        case 5: TA0CCR0 = delay_3ms3;   P2OUT &= ~(BIT4+BIT5+BIT7);	P2OUT |= BIT5;     	TACTL |= TACLR;	break;        	//!F1  F2 !F3 3.3ms
+        default:errorbelongZeroCross();        											TACTL |= TACLR;	break;        	//stop timer and whate zero-cross
+        }
+}
+void errorbelongZeroCross()
+{
+	//display ER4 in case if overflow
+	     digitValue[0]='E';
+	     digitValue[1]='r';
+		 digitValue[2]= 4;
+		 newValue = true;
+		 if (myState == withHall) myState = WithHall_fault;
+		 else  myState = withoutHall;
+		 stopTimerForTriacs();
+	     stopHallSensor();
 }
 void configureTriac()
 {
@@ -38,9 +50,8 @@ void configureTriac()
 	P2IFG &= ~BIT6;    //  Clear   interrupt   flag    for P2.6
 	//P2IE  |=  BIT6; //  Enable  interrupt   for P2.6
 }
-void timerForTriacs(uint)
+void timerForTriacs()
 {
-	TA0CCR0 = 0xFFFF;
 	//		SMCLK	 |  /1	|Stop Mode
 	TACTL = TASSEL_2 | ID_0 | MC_0;
 	TA0CCTL0 &= ~CCIE;                 // Dissable interrupt
@@ -51,13 +62,10 @@ void timerForTriacs(uint)
 {	// Timer0 A0 interrupt service routine
 	   state++;
 	   powerOnTriac();
-
-	//P2OUT |= BIT7;
-	//stopTimerForTriacs();
 }
    void startTimer()
    {
-   	TA0CCR0 = 0x1FFF;//FFFF - 33.33ms
+   	//TA0CCR0 = 0x1FFF;//FFFF - 33.33ms
    	TACTL |= TACLR;
    	TACTL |= MC_1;						//Up mode: the timer counts up to TACCR0.
    	TA0CCTL0 |= CCIE;                 // Enable Timer A0 interrupts, bit 4=1
@@ -68,7 +76,7 @@ void timerForTriacs(uint)
    }
    void stopTimerForTriacs()
    	{
-	//P2IE  &=  ~BIT6; //  disable  interrupt   for P2.6
+	P2IE  &=  ~BIT6; //  disable  interrupt   for P2.6
 	P2OUT &= ~(BIT4+BIT5+BIT7);			//turn off all pins for Triacs
 	TA0CCTL0 &= ~CCIE;                 	//Disable Timer A0 interrupts, bit 4=1
    	TACTL &= ~MC_1;						//Stop mode: the timer is halted.
@@ -79,8 +87,6 @@ void timerForTriacs(uint)
    __interrupt void    Port_2(void)
    {
    	P2IFG  &=  (~BIT6);    //  P2.1    IFG clear
-   	TACTL |= TACLR;
-
-   	state=1;
-   	if (myState == withHall || myState == withoutHall) powerOnTriac();
+   	state=0;
+   	powerOnTriac();
    }

@@ -7,6 +7,7 @@
 
 #ifndef LIBRARY_TRIAC_H_
 #define LIBRARY_TRIAC_H_
+#define delay_3ms3 0x1999;
 #include "commontypes.h"
 #include <msp430g2553.h>
 #include "program.h"
@@ -16,6 +17,8 @@ void stopTimerForTriacs();
 void configureTriac();
 void putONallTriacs();
 void powerOnTriac();
+void errorbelongZeroCross();
 uint8 state;
 uint16 time;
+bool needToStartTimer;
 #endif /* LIBRARY_TRIAC_H_ */

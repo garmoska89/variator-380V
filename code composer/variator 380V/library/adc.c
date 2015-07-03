@@ -54,25 +54,23 @@ __interrupt void ADC10_ISR(void)
 	{
 		if ( onlyOnce1 && ( myState == withHallOff || myState == withHallHigh) )
 		{
-			if (myState == withHallHigh) {CCR0Value = MIN_CCR0;}
-			else {state=6;CCR0Value = MAX_CCRO;}
 			myState = withHall;
 			timeForOverflow=0;
-			//CCR0Value = MAX_CCRO;
-			potentiometerRotation = map(potentiometerADC,ADC_lowLevel,ADC_highLevel,minRotation,maxRotation);
+			programWithHall();	//to update CCR0Value
+			needToStartTimer = true;
+			state=0;
+			P2IE  |= BIT6; 		//activate zero cross detection
 			startHallSensor();
-			powerOnTriac();
 			onlyOnce0=true;onlyOnce1=false;onlyOnce2=true;
 		}
 
 		if ( onlyOnce1 && ( myState == withoutHallOff || myState == withoutHallHigh))
 		{
-			if (myState == withoutHallHigh) CCR0Value = MIN_CCR0;
-			else CCR0Value = MAX_CCRO;
-
+			programWithoutHall();
 			myState = withoutHall;
-
-			powerOnTriac();
+			needToStartTimer = true;
+			state=0;
+			P2IE  |= BIT6; 		//activate zero cross detection
 			onlyOnce0=true;onlyOnce1=false;onlyOnce2=true;
 		}
 

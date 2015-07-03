@@ -24,14 +24,12 @@ int main(void)
     configHallSensor();
     timerForTriacs();
     configureTriac();
-    //startTimer();
     __bis_SR_register(GIE);// Low Power Mode 0, ADC10_ISR
 
     while(1)
     {
 
     }
-    //__bis_SR_register(CPUOFF + GIE);// Low Power Mode 0, ADC10_ISR
     return 0;
 }
 //#pragma endsection
