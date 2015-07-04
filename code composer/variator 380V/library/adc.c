@@ -24,11 +24,10 @@ __interrupt void ADC10_ISR(void)
 	ADC10CTL0 &= ~ENC;				// Disable Conversion
 	while (ADC10CTL1 & BUSY);		// Wait if ADC10 busy
 	potentiometerADC = (1023 - ADC10MEM);
-
-	//potentiometerADC = (1023-potentiometerADC);
+	potentiometerRotation = map(potentiometerADC,ADC_lowLevel,ADC_highLevel,minRotation,maxRotation);
 	if ( (potentiometerADC < ADC_lowLevel))
 	{
-		if(onlyOnce0 && (myState == withHallOff || myState == withHallHigh || myState == withHall || myState == withoutHall) )
+		if(onlyOnce0 && (myState == withHallOff || myState == withHallHigh || myState == withHall || myState == withoutHall || myState == withoutHall_fault) )
 		{
 			myState = withHallOff;
 			stopTimerForTriacs();

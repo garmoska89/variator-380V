@@ -19,7 +19,7 @@ void powerOnTriac()
         								P2OUT &= ~(BIT4+BIT5+BIT7);	P2OUT |= BIT4;		TACTL |= TACLR;	break;        	// F1 !F2 !F3
         case 1: TA0CCR0 = delay_3ms3;   P2OUT &= ~(BIT4+BIT5+BIT7);	P2OUT |= BIT7;    	TACTL |= TACLR;	break;        	//!F1 !F2  F3 3.3ms
         case 2: TA0CCR0 = delay_3ms3;   P2OUT &= ~(BIT4+BIT5+BIT7);	P2OUT |= BIT5;     	TACTL |= TACLR;	break;        	//!F1  F2 !F3 3.3ms
-        case 3: TA0CCR0 = delay_3ms3;   P2OUT &= ~(BIT4+BIT5+BIT7);	P2OUT |= BIT1;     	TACTL |= TACLR;	break;        	// F1 !F2 !F3 3.3ms
+        case 3: TA0CCR0 = delay_3ms3;   P2OUT &= ~(BIT4+BIT5+BIT7);	P2OUT |= BIT4;     	TACTL |= TACLR;	break;        	// F1 !F2 !F3 3.3ms
         case 4: TA0CCR0 = delay_3ms3;   P2OUT &= ~(BIT4+BIT5+BIT7);	P2OUT |= BIT7;     	TACTL |= TACLR;	break;        	//!F1 !F2  F3 3.3ms
         case 5: TA0CCR0 = delay_3ms3;   P2OUT &= ~(BIT4+BIT5+BIT7);	P2OUT |= BIT5;     	TACTL |= TACLR;	break;        	//!F1  F2 !F3 3.3ms
         default:errorbelongZeroCross();        											TACTL |= TACLR;	break;        	//stop timer and whate zero-cross
@@ -33,7 +33,7 @@ void errorbelongZeroCross()
 		 digitValue[2]= 4;
 		 newValue = true;
 		 if (myState == withHall) myState = WithHall_fault;
-		 else  myState = withoutHall;
+		 else  myState = withoutHall_fault;
 		 stopTimerForTriacs();
 	     stopHallSensor();
 }

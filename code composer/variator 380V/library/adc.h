@@ -30,6 +30,7 @@ typedef enum stateMachine
 	withHallHigh,
 
 	WithHall_fault,
+	withoutHall_fault,
 
 	withoutHallOff,
 	withoutHall,

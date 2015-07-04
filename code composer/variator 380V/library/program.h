@@ -12,6 +12,7 @@
 #define MIN_CCR0 0x000F
 #define minRotation 300
 #define maxRotation 4000
+#define STEEP_INCREMENT_DECREMENT 50
 #ifndef PROGRAM_H_
 #define PROGRAM_H_
 void programWithHall();
