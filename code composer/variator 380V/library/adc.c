@@ -31,6 +31,7 @@ __interrupt void ADC10_ISR(void)
 		{
 			myState = withHallOff;
 			stopTimerForTriacs();
+			stopHallSensor();
 			onlyOnce0=false;onlyOnce1=true;onlyOnce2=true;
 			digitValue[0]='O';
 			digitValue[1]='F';
@@ -42,6 +43,7 @@ __interrupt void ADC10_ISR(void)
 		{
 			myState = withoutHallOff;
 			stopTimerForTriacs();
+			stopHallSensor();
 			onlyOnce0=false;onlyOnce1=true;onlyOnce2=true;
 			digitValue[0]='O';
 			digitValue[1]='F';
@@ -53,23 +55,31 @@ __interrupt void ADC10_ISR(void)
 	{
 		if ( onlyOnce1 && ( myState == withHallOff || myState == withHallHigh) )
 		{
-			myState = withHall;
-			timeForOverflow=0;
-			programWithHall();	//to update CCR0Value
-			needToStartTimer = true;
-			state=0;
-			P2IE  |= BIT6; 		//activate zero cross detection
+			programWithHall();				//to update CCR0Value
+			P2IE  |= BIT6; 				 	//activate zero cross detection
+			zeroCrossOcured = false;		//after first zero Cross the system considering in start Mode
+			//startTimer();
 			startHallSensor();
+
+			myState = withHall;
+
+			timeForOverflow=0;
+			state=0;
+			firsTime=true;
 			onlyOnce0=true;onlyOnce1=false;onlyOnce2=true;
 		}
 
 		if ( onlyOnce1 && ( myState == withoutHallOff || myState == withoutHallHigh))
 		{
-			programWithoutHall();
+			programWithoutHall();			//to update CCR0Value
+			P2IE  |= BIT6; 					//activate zero cross detection
+			zeroCrossOcured = false;
+			//startTimer();
+
 			myState = withoutHall;
-			needToStartTimer = true;
+
 			state=0;
-			P2IE  |= BIT6; 		//activate zero cross detection
+			firsTime=true;
 			onlyOnce0=true;onlyOnce1=false;onlyOnce2=true;
 		}
 
@@ -78,10 +88,16 @@ __interrupt void ADC10_ISR(void)
 	{
 		if(onlyOnce2 && (myState == withHallOff || myState == withHall))
 		{
-			myState = withHallHigh;
 			stopTimerForTriacs();
+			stopHallSensor();
 			putONallTriacs();
+
+			P2IE &= ~BIT6;
+
+			myState = withHallHigh;
+
 			onlyOnce0=true;onlyOnce1=true;onlyOnce2=false;
+
 			digitValue[0]=9;
 			digitValue[1]=9;
 			digitValue[2]=9;
@@ -89,12 +105,15 @@ __interrupt void ADC10_ISR(void)
 		}
 		if(onlyOnce2 && (myState == withoutHallOff || myState == withoutHall))
 		{
-			myState = withoutHallHigh;
 			stopTimerForTriacs();
 			putONallTriacs();
-			CCR0Value=0;
-			procentValue = 100;
+
+			P2IE &= ~BIT6;
+
+			myState = withoutHallHigh;
 			onlyOnce0=true;onlyOnce1=true;onlyOnce2=false;
+
+			procentValue = 100;
 			digitValue[0]=1;
 			digitValue[1]=0;
 			digitValue[2]=0;

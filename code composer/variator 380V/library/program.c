@@ -29,7 +29,9 @@ void programWithoutHall()
 	uint16 tmpValue;
 	tmpValue = potentiometerADC;
 	tmpValue = constrain(tmpValue,ADC_lowLevel,ADC_highLevel);
+
 	CCR0Value = map(tmpValue,ADC_lowLevel,ADC_highLevel,MAX_CCRO,MIN_CCR0);
+
 	procentValue = map(tmpValue,ADC_lowLevel,ADC_highLevel,1,100);
 	procentValue=constrain(procentValue,1,100);
 }

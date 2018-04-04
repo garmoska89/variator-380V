@@ -25,10 +25,46 @@ int main(void)
     timerForTriacs();
     configureTriac();
     __bis_SR_register(GIE);// Low Power Mode 0, ADC10_ISR
-
     while(1)
     {
-
+    	if (zeroCrossOcured && (myState == withHall || myState == withoutHall))
+    	{
+    		if (firsTime)
+    		{
+    			if (TA0R > (CCR0Value))
+				{
+					TA0R_last = TA0R; state = 0;firsTime = false;powerOnTriac();
+				}
+    		}
+    		else
+    		{
+//    			if (state == 0)
+//				{
+//    				if(TA0R > (TA0R_last + delay_3ms3) )
+//    				{
+//    				//TA0R_last = ( TA0R - (TA0R_last - 200) );		//TA0R_last sinchronization by add or substract.
+//
+//    				TA0R_last = TA0R;
+//    				powerOnTriac();
+//    				}
+//				}
+//    			else
+    			{
+					if (state%2 != 0 )
+						{
+						if (TA0R > (TA0R_last + 200) ) powerOnTriac();
+						}
+					else
+					{
+						if(TA0R > (TA0R_last + delay_3ms3) )
+						{
+						TA0R_last = TA0R;
+						powerOnTriac();
+						}
+					}
+    			}
+    		}
+    	}
     }
     return 0;
 }

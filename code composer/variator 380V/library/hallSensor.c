@@ -12,8 +12,8 @@ void configHallSensor()
 //
 P2DIR &=~BIT3;								//set input
 P2SEL |= BIT3;								//Timer1_A3.CCI0B
-
-TA1CTL = CNTL0 | TASSEL_2 | ID_3 | MC_2 | TACLR ;//| TAIE;
+//			SMCLK	  16Bit	 DIV4	Continues Mode
+TA1CTL =  TASSEL_2 | CNTL0 | ID_3 | MC_2 | TACLR ;//| TAIE;
 /*
 SCS	- 0	Asynchronous capture
 	  1	Synchronous capture

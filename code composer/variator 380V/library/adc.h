@@ -37,8 +37,4 @@ typedef enum stateMachine
 	withoutHallHigh
 }stateMachine;
 stateMachine myState;
-extern bool fault;
-extern bool ignored;
-extern uint16 number;
-extern bool newValue;
 #endif /* LIBRARY_ADC_H_ */
